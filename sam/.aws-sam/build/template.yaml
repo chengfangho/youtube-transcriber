@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'transcriber
+
+  '
+Resources:
+  TranscribeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: TranscribeFunction
+      Handler: run.transcribe
+      Runtime: python3.12
+    Metadata:
+      SamResourceId: TranscribeFunction

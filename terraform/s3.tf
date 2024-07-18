@@ -13,3 +13,8 @@ resource "aws_s3_object" "transcribe-lambda-zip" {
   bucket = aws_s3_bucket.transcriber-deployment-package-bucket-715.bucket
   key = "lambda.zip"
 }
+
+resource "aws_s3_object" "audio-downloader-lambda-zip" {
+  bucket = aws_s3_bucket.transcriber-deployment-package-bucket-715.bucket
+  key = "audio_downloader_lambda.zip"
+}

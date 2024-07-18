@@ -1,14 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: 'transcriber
+Description: 'audio_downloader
 
   '
 Resources:
-  TranscribeFunction:
+  DownloadAudioFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: TranscribeFunction
-      Handler: run.transcribe
+      CodeUri: DownloadAudioFunction
+      Handler: main.lambda_handler
       Runtime: python3.12
     Metadata:
-      SamResourceId: TranscribeFunction
+      SamResourceId: DownloadAudioFunction

@@ -8,4 +8,4 @@ Resources:
     Properties:
       CodeUri: ../src/download_audio
       Handler: main.lambda_handler
-      Runtime: python3.12
+      Runtime: python3.11

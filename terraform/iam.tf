@@ -53,3 +53,11 @@ resource "aws_iam_role_policy_attachment" "attach-iam-policy-to-transcribe-lambd
  role        = aws_iam_role.transcribe-lambda-role.name
  policy_arn  = aws_iam_policy.transcribe-lambda-policy.arn
 }
+
+resource "aws_lambda_permission" "apigw" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.download-audio-function-715.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn = "${aws_api_gateway_rest_api.transcriber-api-gateway.execution_arn}/*/*"
+}

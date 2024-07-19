@@ -1,30 +1,26 @@
 import os
 import boto3
-from pytube import YouTube
 import subprocess
 import json
+from pytubefix import YouTube
+from pytubefix.cli import on_progress
 
 s3 = boto3.client("s3")
-
 
 def lambda_handler(event, context):
     body = json.loads(event["body"])
     url = body["url"]
-    video = YouTube(url)
-    video_name = video.title
-    audio_stream = video.streams.filter(only_audio=True).first()
-    audio_stream.download("/tmp", f"{video_name}.mp4")
+    video = YouTube(url, on_progress_callback = on_progress)
 
-    # Convert to audio file if necessary
-    ffmpeg_path = "/var/task/bin/ffmpeg"
-    input_file = f"/tmp/{video_name}.mp4"
-    output_file = f"/tmp/{video_name}.mp3"
-    subprocess.run([ffmpeg_path, "-i", input_file, output_file])
+    video_name = video.title
+
+    audio_stream = video.streams.get_audio_only()
+    audio_stream.download('/tmp/',video_name, mp3=True)
 
     # Upload to S3
-    bucket_name = "audio-bucket-cheng"
-    s3_key = f"audio/{video_name}.mp3"
-    s3.upload_file(output_file, bucket_name, s3_key)
+    bucket_name = "audio-bucket-715"
+    s3_key = f"{video_name}.mp3"
+    s3.upload_file(f'/tmp/{video_name}.mp3', bucket_name, s3_key)
 
     return {
         "statusCode": 200,

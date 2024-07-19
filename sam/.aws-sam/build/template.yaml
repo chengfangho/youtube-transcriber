@@ -9,6 +9,6 @@ Resources:
     Properties:
       CodeUri: DownloadAudioFunction
       Handler: main.lambda_handler
-      Runtime: python3.12
+      Runtime: python3.11
     Metadata:
       SamResourceId: DownloadAudioFunction

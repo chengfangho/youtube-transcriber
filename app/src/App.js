@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 
-const invoke_url = "https://your-api-endpoint.com/";
+const invoke_url = "https://6m2sdul81k.execute-api.us-west-2.amazonaws.com/";
 
 function App() {
   const [youtubeUrl, setYoutubeUrl] = useState("");
@@ -13,7 +13,7 @@ function App() {
     e.preventDefault();
     setIsLoading(true);
     setTranscriptionResult(""); // Clear previous result
-    fetch(`${invoke_url}transcribe`, {
+    fetch(`${invoke_url}dev/extract`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ function App() {
           throw new Error("Failed to fetch transcription");
         }
         const data = await response.json();
-        setTranscriptionResult(data.transcription);
+        setTranscriptionResult(data.message);
         setIsError(false);
         setIsLoading(false);
       })

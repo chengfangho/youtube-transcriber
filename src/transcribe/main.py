@@ -1,5 +1,5 @@
 import boto3
-import time
+import json
 import urllib.parse
 from datetime import datetime
 
@@ -13,7 +13,6 @@ def lambda_handler(event, context):
         event["Records"][0]["s3"]["object"]["key"], encoding="utf-8"
     )
     job_uri = f"s3://{bucket_name}/{key}"
-
     job_name = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     transcribe.start_transcription_job(
@@ -22,7 +21,10 @@ def lambda_handler(event, context):
         MediaFormat="mp3",
         LanguageCode="zh-TW",
         OutputBucketName=bucket_name,
+        OutputKey= key.split(".")[0],
         Subtitles={"Formats": ["srt"]},
     )
 
-    return {"statusCode": 200, "body": "Transcription job started."}
+    return {"statusCode": 200, "body": json.dumps({
+            "message": "Transcription job started."
+        })}

@@ -33,3 +33,13 @@ resource "aws_s3_bucket_versioning" "audio-bucket-715-versioning" {
     status = "Enabled"
   }
 }
+
+resource "aws_s3_bucket_notification" "audio-upload-lambda-trigger" {
+    bucket = aws_s3_bucket.audio-bucket-715.id
+    lambda_function {
+        lambda_function_arn = aws_lambda_function.transcribe-function-715.arn
+        events              = ["s3:ObjectCreated:*"]
+        filter_suffix = ".mp3"
+    }
+    depends_on = [aws_lambda_permission.allow_bucket]
+}

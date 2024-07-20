@@ -15,8 +15,8 @@ resource "aws_lambda_function" "download-audio-function-715" {
   role                           = aws_iam_role.transcribe-lambda-role.arn
   handler                        = "main.lambda_handler"
   runtime                        = "python3.10"
-  timeout                        = 10
-  memory_size                    = 500                                                    
+  timeout                        = 600
+  memory_size                    = 1000                                                    
   s3_bucket                      = aws_s3_bucket.transcriber-deployment-package-bucket-715.bucket 
   s3_key                         = aws_s3_object.audio-downloader-lambda-zip.key
   s3_object_version              = aws_s3_object.audio-downloader-lambda-zip.version_id              

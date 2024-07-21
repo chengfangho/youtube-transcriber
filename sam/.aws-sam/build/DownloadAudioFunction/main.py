@@ -15,7 +15,6 @@ def lambda_handler(event, context):
     audio_stream = video.streams.get_audio_only()
     audio_stream.download('/tmp/',video_name, mp3=True)
 
-    # Upload to S3
     bucket_name = "audio-bucket-715"
     s3_key = f"{video_name}.mp3"
     s3.upload_file(f'/tmp/{video_name}.mp3', bucket_name, f"{video_name}/{s3_key}".replace(" ", "_"))
@@ -28,6 +27,6 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
         "body": json.dumps({
-            "message": f"Audio file uploaded to S3://{bucket_name}/{s3_key}"
+            "message": "Transcription process initiated..."
         }),
     }

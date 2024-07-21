@@ -16,6 +16,7 @@ resource "aws_api_gateway_method" "transcriber-api-method-option"{
     http_method = "OPTIONS"
     resource_id = aws_api_gateway_resource.transcriber-api-gateway-resource.id
     rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
+    depends_on = [ aws_api_gateway_resource.transcriber-api-gateway-resource ]
 }
 
 resource "aws_api_gateway_method" "transcriber-api-method-post"{
@@ -23,6 +24,7 @@ resource "aws_api_gateway_method" "transcriber-api-method-post"{
     http_method = "POST"
     resource_id = aws_api_gateway_resource.transcriber-api-gateway-resource.id
     rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
+    depends_on = [ aws_api_gateway_resource.transcriber-api-gateway-resource ]
 }
 
 resource "aws_api_gateway_method_response" "transcriber-api-method-response-option" {
@@ -38,6 +40,7 @@ resource "aws_api_gateway_method_response" "transcriber-api-method-response-opti
   }
   rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
   status_code = "200"
+  depends_on = [ aws_api_gateway_method.transcriber-api-method-option ]
 }
 
 resource "aws_api_gateway_method_response" "transcriber-api-method-response-post" {
@@ -48,6 +51,7 @@ resource "aws_api_gateway_method_response" "transcriber-api-method-response-post
   }
   rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
   status_code = "200"
+  depends_on = [ aws_api_gateway_method.transcriber-api-method-post ]
 }
 
 resource "aws_api_gateway_integration" "transcriber-api-integration-option" {
@@ -61,6 +65,7 @@ resource "aws_api_gateway_integration" "transcriber-api-integration-option" {
   rest_api_id          = aws_api_gateway_rest_api.transcriber-api-gateway.id
   timeout_milliseconds = "29000"
   type                 = "MOCK"
+  depends_on = [ aws_api_gateway_resource.transcriber-api-gateway-resource ]
 }
 
 resource "aws_api_gateway_integration" "transcriber-api-integration-post" {
@@ -74,6 +79,7 @@ resource "aws_api_gateway_integration" "transcriber-api-integration-post" {
   timeout_milliseconds    = "29000"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.download-audio-function-715.invoke_arn
+  depends_on = [ aws_api_gateway_resource.transcriber-api-gateway-resource ]
 }
 
 resource "aws_api_gateway_integration_response" "transcriber-api-integration-response-option" {
@@ -86,6 +92,7 @@ resource "aws_api_gateway_integration_response" "transcriber-api-integration-res
   }
   rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
   status_code = "200"
+  depends_on = [ aws_api_gateway_integration.transcriber-api-integration-option]
 }
 
 resource "aws_api_gateway_integration_response" "transcriber-api-integration-response-post" {
@@ -93,16 +100,25 @@ resource "aws_api_gateway_integration_response" "transcriber-api-integration-res
   resource_id = aws_api_gateway_resource.transcriber-api-gateway-resource.id
   rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
   status_code = "200"
+  depends_on = [ aws_api_gateway_integration.transcriber-api-integration-post ]
 }
 
 resource "aws_api_gateway_deployment" "transcriber_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.transcriber-api-gateway.id
+  depends_on = [ aws_api_gateway_integration.transcriber-api-integration-post ]
 }
 
 resource "aws_api_gateway_stage" "transcriber-api-dev" {
   deployment_id         = aws_api_gateway_deployment.transcriber_api_deployment.id
   rest_api_id           = aws_api_gateway_rest_api.transcriber-api-gateway.id
   stage_name            = "dev"
+  depends_on = [ 
+    aws_api_gateway_deployment.transcriber_api_deployment, 
+    aws_api_gateway_integration_response.transcriber-api-integration-response-post, 
+    aws_api_gateway_integration_response.transcriber-api-integration-response-option,
+    aws_api_gateway_method_response.transcriber-api-method-response-option,
+    aws_api_gateway_method_response.transcriber-api-method-response-post
+    ]
 }
 
 output "api_gateway_invoke_url" {

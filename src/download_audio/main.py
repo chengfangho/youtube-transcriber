@@ -28,6 +28,6 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
         "body": json.dumps({
-            "message": f"Audio file uploaded to S3://{bucket_name}/{s3_key}"
+            "message": "Transcription process initiated..."
         }),
     }

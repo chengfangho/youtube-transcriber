@@ -25,5 +25,5 @@ def lambda_handler(event, context):
     )
 
     return {"statusCode": 200, "body": json.dumps({
-            "message": "Transcription job started."
+            "message": "Transcription process initiated..."
         })}

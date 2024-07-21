@@ -50,6 +50,11 @@ resource "aws_iam_policy" "transcribe-lambda-policy" {
             ],                
             "Resource": "arn:aws:transcribe:us-west-2:166366443471:transcription-job/*",
             "Effect": "Allow"
+        },
+        {
+            "Action": "ses:SendRawEmail",
+            "Resource": "arn:aws:ses:us-west-2:166366443471:*/*",
+            "Effect": "Allow"
         }
     ]
     }
@@ -69,10 +74,18 @@ resource "aws_lambda_permission" "apigw" {
   source_arn = "${aws_api_gateway_rest_api.transcriber-api-gateway.execution_arn}/*/*"
 }
 
-resource "aws_lambda_permission" "allow_bucket" {
+resource "aws_lambda_permission" "allow_bucket-transcribe" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.transcribe-function-715.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.audio-bucket-715.arn
+}
+
+resource "aws_lambda_permission" "allow_bucket-email" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.send-to-email-function-715.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.audio-bucket-715.arn
 }

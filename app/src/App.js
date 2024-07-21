@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 
-const invoke_url = "https://6m2sdul81k.execute-api.us-west-2.amazonaws.com/";
+const invoke_url = "https://8lx4ydqpfe.execute-api.us-west-2.amazonaws.com/";
 
 function App() {
   const [youtubeUrl, setYoutubeUrl] = useState("");

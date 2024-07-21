@@ -21,7 +21,6 @@ def lambda_handler(event, context):
         MediaFormat="mp3",
         LanguageCode="zh-TW",
         OutputBucketName=bucket_name,
-        OutputKey= key.split(".")[0],
         Subtitles={"Formats": ["srt"]},
     )
 

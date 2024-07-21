@@ -34,12 +34,23 @@ resource "aws_s3_bucket_versioning" "audio-bucket-715-versioning" {
   }
 }
 
-resource "aws_s3_bucket_notification" "audio-upload-lambda-trigger" {
-    bucket = aws_s3_bucket.audio-bucket-715.id
-    lambda_function {
-        lambda_function_arn = aws_lambda_function.transcribe-function-715.arn
-        events              = ["s3:ObjectCreated:*"]
-        filter_suffix = ".mp3"
-    }
-    depends_on = [aws_lambda_permission.allow_bucket]
+resource "aws_s3_bucket_notification" "audio_upload_notifications" {
+  bucket = aws_s3_bucket.audio-bucket-715.bucket
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.transcribe-function-715.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_suffix       = ".mp3"
+  }
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.send-to-email-function-715.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_suffix       = ".srt"
+  }
+
+  depends_on = [
+    aws_lambda_permission.allow_bucket-email,
+    aws_lambda_permission.allow_bucket-transcribe
+  ]
 }
